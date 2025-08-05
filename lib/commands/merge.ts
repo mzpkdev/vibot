@@ -9,6 +9,11 @@ import { audio, defaults, input, language, number, output, subtitles, title } fr
 export default defineCommand({
     name: "merge",
     description: "merge files to mkv",
+    examples: [
+        `--output example/merged --input example/videos --audio example/audio/en example/audio/jp`,
+        `--output example/merged --input example/videos --subtitles example/subtitles/en`,
+        `-o example/merged -i example/videos -a example/audio/jp -s example/subtitles/en --title "Audio|Subtitles"`
+    ],
     options: [
         input,
         output,
@@ -20,7 +25,7 @@ export default defineCommand({
         number
     ],
     run: async function* ({ ...options }) {
-        const { language, title, defaults, number } = options
+        const { title, language, defaults, number } = options
         for (const [ input, audio, subtitles ] of zip(options.input, zip(...options.audio), zip(...options.subtitles))) {
             const output = path.join(options.output, path.basename(input))
             const results = await merge(input, output, audio, subtitles, language, title, defaults, number)
@@ -35,31 +40,31 @@ export default defineCommand({
 export const merge = async (
     input: string,
     output: string,
-    audio: string[],
-    subtitles: string[],
-    language: string[],
-    title: string[],
-    defaults: boolean[],
-    number: number[]
+    audio: string[] = [],
+    subtitles: string[] = [],
+    language: string[] = [],
+    title: string[][] = [],
+    defaults: boolean[] = [],
+    number: number[] = []
 ) => {
-        await mkvmerge(output,
-            clean(input, [ `subtitles`, `audio` ]),
-            ...audio.map((audio, index) =>
-                track(audio, {
-                    index: number[index],
-                    title: title[index],
-                    language: language[index],
-                    defaults: defaults[index]
-                })
-            ),
-            ...subtitles.map((subtitle, index) =>
-                track(subtitle, {
-                    index: number[index],
-                    title: title[index],
-                    language: language[index],
-                    defaults: defaults[index]
-                })
-            )
+    await mkvmerge(output,
+        clean(input, [ `subtitles`, `audio` ]),
+        ...audio.map((audio, index) =>
+            track(audio, {
+                index: number[index],
+                title: title[index][0],
+                language: language[index],
+                defaults: defaults[index]
+            })
+        ),
+        ...subtitles.map((subtitle, index) =>
+            track(subtitle, {
+                index: number[index],
+                title: title[index][1] ?? title[index][0],
+                language: language[index],
+                defaults: defaults[index]
+            })
         )
+    )
     return { output }
 }

@@ -10,8 +10,8 @@ export default defineOption({
     defaultValue: () => {
         return []
     },
-    validate: (...values) => {
-        for (const pathname of values) {
+    validate: (...pathnames) => {
+        for (const pathname of pathnames) {
             if (!fs.existsSync(pathname)) {
                 throw new Error(`Path ${pathname} does not exist`)
             }

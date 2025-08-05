@@ -6,9 +6,9 @@ export default defineOption({
     alias: "t",
     description: "",
     defaultValue: () => {
-        return [ "" ]
+        return [ [ "" ] ]
     },
-    parse: (...values) => {
-        return values
+    parse: (...titles) => {
+        return titles.map(title => title.split("|"))
     }
 })

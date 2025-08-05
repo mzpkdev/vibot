@@ -8,14 +8,14 @@ export default defineOption({
     defaultValue: () => {
         return [ 0 ]
     },
-    validate: (...values) => {
-        for (const value of values) {
-            if (Number.isNaN(Number(value))) {
-                throw new Error(`Number "${value}" is not a number.`)
+    validate: (...numbers) => {
+        for (const number of numbers) {
+            if (Number.isNaN(Number(number))) {
+                throw new Error(`Number "${number}" is not a number.`)
             }
         }
     },
-    parse: (...values) => {
-        return values.map(Number)
+    parse: (...numbers) => {
+        return numbers.map(Number)
     }
 })

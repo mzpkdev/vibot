@@ -8,7 +8,7 @@ export default defineOption({
     defaultValue: () => {
         return [ "und" ]
     },
-    parse: (...values) => {
-        return values
+    parse: (...languages) => {
+        return languages
     }
 })

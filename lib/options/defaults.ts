@@ -8,7 +8,7 @@ export default defineOption({
     defaultValue: () => {
         return [ true ]
     },
-    parse: (...values) => {
-        return values.map(value => value === "yes")
+    parse: (...defaults) => {
+        return defaults.map(defaultValue => defaultValue === "yes")
     }
 })
