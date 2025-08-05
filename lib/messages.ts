@@ -1,7 +1,7 @@
 import { cyan } from "logtint"
 
 export const executing = (binary: string, args: unknown[]) => {
-    return `Executing: ${cyan(binary)} ${args.join(" ")}...`
+    return `Executing: ${cyan(binary)} ${args.join(" ")}`
 }
 
 export const success = (filename: string): string => {
