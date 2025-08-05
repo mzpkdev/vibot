@@ -21,12 +21,13 @@ const ffmpeg = async <TReturnValue>(
     for (const option of options) {
         awaited.push(await option?.(input))
     }
+    const muxer = /\S+:s/.test(argument.join(" ")) ? "srt" : "null"
     const stdout = await spawn("ffmpeg", [
         [ `-y`, `-hide_banner`, `-i`, `"${input}"` ],
         argument,
         ...awaited
             .map(option => option.argument ?? []),
-        [ output === null ? `-f null -` : `"${output}"` ]
+        [ output === null ? `-f ${muxer} -` : `"${output}"` ]
     ])
     return (parse?.(stdout) ?? stdout) as TReturnValue
 }
