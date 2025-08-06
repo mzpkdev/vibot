@@ -3,14 +3,18 @@ import { Chainable, ExecutableOption, spawn } from "../core/executables"
 
 const mkvmerge = async <TReturnValue>(
     output: string,
-    ...options: Chainable<ExecutableOption>[]
+    ...options: (Chainable<ExecutableOption> | null | undefined)[]
 ): Promise<TReturnValue> => {
     const [ head, ...tail ] = options
-    const { argument = [], parse } = await head?.(output)
+    const { argument = [], parse } = await head?.(output) ?? {}
     const stdout = await spawn("mkvmerge", [
         [ `--output`, `"${output}"` ],
         argument,
-        ...(await Promise.all(tail.map(option => option?.(output))))
+        ...(await Promise.all(
+            tail
+                .filter(option => !!option)
+                .map(option => option?.(output))
+        ))
             .map(option => option.argument ?? [])
     ])
     return parse?.(stdout) as TReturnValue
@@ -45,7 +49,16 @@ export const track = (input: string, metadata: TrackMetadata): Chainable<Executa
         }
     }
 
-export const clean = (input: string, exclude: string[] = []): Chainable<ExecutableOption> =>
+export const file = (input: string): Chainable<ExecutableOption> =>
+    async () => {
+        return {
+            argument: [
+                [ `"${input}"` ]
+            ]
+        }
+    }
+
+export const clean = (exclude: string[] = []): Chainable<ExecutableOption> =>
     async () => {
         return {
             argument: [
@@ -56,8 +69,7 @@ export const clean = (input: string, exclude: string[] = []): Chainable<Executab
                 [ `--no-attachments` ],
                 [ `--no-global-tags` ],
                 ...exclude
-                    .map<[ string ]>(type => [ `--no-${type}` ]),
-                [ `"${input}"` ]
+                    .map<[ string ]>(type => [ `--no-${type}` ])
             ]
         }
 
