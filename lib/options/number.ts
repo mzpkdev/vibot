@@ -4,7 +4,7 @@ import { defineOption } from "cmdore"
 export default defineOption({
     name: "number",
     alias: "n",
-    description: "",
+    description: "specify track number to extract or use in merge operations",
     defaultValue: () => {
         return [ 0 ]
     },

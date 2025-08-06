@@ -10,7 +10,10 @@ import { input, number, output } from "@/options"
 
 export default defineCommand({
     name: "extractaudio",
-    description: "extractaudio",
+    description: "extract audio tracks from video files and save them as separate files",
+    examples: [
+      "-o example/audio/jp -i example/video -n 0"
+    ],
     options: [
         input,
         output,

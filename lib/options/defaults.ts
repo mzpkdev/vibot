@@ -4,7 +4,7 @@ import { defineOption } from "cmdore"
 export default defineOption({
     name: "defaults",
     alias: "d",
-    description: "",
+    description: "set track as default in the merged file (use 'yes' to enable)",
     defaultValue: () => {
         return [ true ]
     },

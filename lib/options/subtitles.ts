@@ -6,7 +6,7 @@ import { defineOption } from "cmdore"
 export default defineOption({
     name: "subtitles",
     alias: "s",
-    description: "",
+    description: "path to directory containing subtitle files to be included in the merge",
     defaultValue: () => {
         return []
     },

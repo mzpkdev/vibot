@@ -6,7 +6,7 @@ import { defineOption } from "cmdore"
 export default defineOption({
     name: "audio",
     alias: "a",
-    description: "",
+    description: "path to directory containing audio files to be included in the merge",
     defaultValue: () => {
         return []
     },

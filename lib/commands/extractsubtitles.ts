@@ -9,7 +9,10 @@ import { input, number, output } from "@/options"
 
 export default defineCommand({
     name: "extractsubtitles",
-    description: "extractsubtitles",
+    description: "extract subtitle tracks from video files and save them as SRT files",
+    examples: [
+        "-o example/subtitles/en -i example/video -n 0"
+    ],
     options: [
         input,
         output,

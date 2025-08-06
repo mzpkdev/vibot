@@ -7,7 +7,7 @@ export default defineOption({
     name: "output",
     alias: "o",
     required: true,
-    description: "path to output directory",
+    description: "path to directory where processed files will be saved",
     validate: (pathname) => {
         if (!fs.existsSync(pathname)) {
             return true

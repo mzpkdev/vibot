@@ -8,11 +8,11 @@ import { audio, defaults, input, language, number, output, subtitles, title } fr
 
 export default defineCommand({
     name: "merge",
-    description: "merge files to mkv",
+    description: "merge video, audio, and subtitle files into a single MKV container",
     examples: [
-        `--output example/merged --input example/videos --audio example/audio/en example/audio/jp`,
-        `--output example/merged --input example/videos --subtitles example/subtitles/en`,
-        `-o example/merged -i example/videos -a example/audio/jp -s example/subtitles/en --title "Audio|Subtitles"`
+        `-o example/merged -i example/videos -a example/audio/en example/audio/jp`,
+        `-o example/merged -i example/videos -s example/subtitles/en`,
+        `-o example/merged -i example/videos -a example/audio/jp -s example/subtitles/en -t "Audio|Subtitles"`
     ],
     options: [
         input,

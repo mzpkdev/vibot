@@ -6,7 +6,7 @@ import { defineOption } from "cmdore"
 export default defineOption({
     name: "input",
     alias: "i",
-    description: "path to input directory",
+    description: "path to directory containing input files to be processed",
     required: true,
     validate: (pathname) => {
         if (!fs.existsSync(pathname)) {

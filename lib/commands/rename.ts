@@ -1,13 +1,16 @@
 import * as fs from "node:fs"
 import * as path from "node:path"
 import { defineCommand, effect, terminal } from "cmdore"
-import { input, output } from "@/options"
 import { success } from "@/messages"
+import { input, output } from "@/options"
 
 
 export default defineCommand({
     name: "rename",
-    description: "rename files to specified format",
+    description: "rename files according to a specified format pattern",
+    examples: [
+        "-o example/renamed/{name}.1080p.mkv -i example/video"
+    ],
     options: [
         input,
         output

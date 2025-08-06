@@ -4,7 +4,7 @@ import { defineOption } from "cmdore"
 export default defineOption({
     name: "language",
     alias: "l",
-    description: "",
+    description: "specify ISO language code for audio and subtitle tracks (e.g., 'en', 'jp')",
     defaultValue: () => {
         return [ "und" ]
     },
