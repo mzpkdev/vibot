@@ -2,8 +2,9 @@ import * as path from "node:path"
 import { defineCommand, terminal } from "cmdore"
 import { success } from "@/messages"
 import { zip } from "@/utilities/array"
+import { resumable } from "@/core/commands"
 import mkvmerge, { clean, file, track } from "@/executables/mkvmerge"
-import { audio, defaults, input, language, number, output, purge, subtitles, title } from "@/options"
+import { audio, defaults, input, language, number, output, purge, resume, subtitles, title } from "@/options"
 
 
 export default defineCommand({
@@ -23,18 +24,23 @@ export default defineCommand({
         title,
         defaults,
         number,
-        purge
+        purge,
+        resume
     ],
-    run: async function* ({ ...options }) {
-        const { title, language, defaults, number, purge } = options
-        for (const [ input, audio, subtitles ] of zip(options.input, zip(...options.audio), zip(...options.subtitles))) {
-            const output = path.join(options.output, path.basename(input))
-            const results = await runner(input, output, audio, subtitles, language, title, defaults, number, purge)
-            if (results.output != null) {
-                terminal.print(success(results.output))
+    run: async function* (options) {
+        yield* resumable(options.output, async function* (skip) {
+            const { title, language, defaults, number, purge } = options
+            for (const [ input, audio, subtitles ] of zip(options.input, zip(...options.audio), zip(...options.subtitles))) {
+                const output = path.join(options.output, path.basename(input))
+                const results = await skip(() => {
+                    return runner(input, output, audio, subtitles, language, title, defaults, number, purge)
+                }, `${input}:${output}:${audio}:${subtitles}:${language}:${title}:${defaults}:${number}:${purge}`)
+                if (results.output != null) {
+                    terminal.print(success(results.output))
+                }
+                yield results
             }
-            yield results
-        }
+        }, options.resume)
     }
 })
 

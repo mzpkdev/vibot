@@ -3,9 +3,10 @@ import * as path from "node:path"
 import { defineCommand, effect, terminal } from "cmdore"
 import { success } from "@/messages"
 import { AudioCodec, TrackType } from "@/core/executables"
+import { resumable } from "@/core/commands"
 import ffprobe, { info } from "@/executables/ffprobe"
 import ffmpeg, { ac, ar, bitrate, codec, copy, filter, loudnorm, map } from "@/executables/ffmpeg"
-import { exclude, input, output } from "@/options"
+import { exclude, input, output, resume } from "@/options"
 
 
 export default defineCommand({
@@ -17,23 +18,28 @@ export default defineCommand({
     options: [
         input,
         output,
-        exclude
+        exclude,
+        resume
     ],
     run: async function* (options) {
-        const { exclude } = options
-        await effect(() => {
-            if (!fs.existsSync(options.output)) {
-                fs.mkdirSync(options.output, { recursive: true })
+        yield* resumable(options.output, async function* (skip) {
+            const { exclude } = options
+            await effect(async () => {
+                if (!fs.existsSync(options.output)) {
+                    fs.mkdirSync(options.output, { recursive: true })
+                }
+            })
+            for (const input of options.input) {
+                const output = path.join(options.output, path.basename(input))
+                const results = await skip(() => {
+                    return runner(input, output, exclude)
+                }, `${input}:${output}:${exclude}`)
+                if (results.output != null) {
+                    terminal.print(success(results.output))
+                }
+                yield results
             }
-        })
-        for (const input of options.input) {
-            const output = path.join(options.output, path.basename(input))
-            const results = await runner(input, output, exclude)
-            if (results.output != null) {
-                terminal.print(success(results.output))
-            }
-            yield results
-        }
+        }, options.resume)
     }
 })
 

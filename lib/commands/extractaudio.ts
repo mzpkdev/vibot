@@ -3,9 +3,10 @@ import * as path from "node:path"
 import { defineCommand, effect, terminal } from "cmdore"
 import { success } from "@/messages"
 import { TrackType } from "@/core/executables"
+import { resumable } from "@/core/commands"
 import ffprobe, { info } from "@/executables/ffprobe"
 import ffmpeg, { extract } from "@/executables/ffmpeg"
-import { input, number, output } from "@/options"
+import { input, number, output, resume } from "@/options"
 
 
 export default defineCommand({
@@ -17,23 +18,28 @@ export default defineCommand({
     options: [
         input,
         output,
-        number
+        number,
+        resume
     ],
     run: async function* ({ ...options }) {
-        const { number } = options
-        await effect(() => {
-            if (!fs.existsSync(options.output)) {
-                fs.mkdirSync(options.output, { recursive: true })
+        yield* resumable(options.output, async function* (skip) {
+            const { number } = options
+            await effect(async () => {
+                if (!fs.existsSync(options.output)) {
+                    fs.mkdirSync(options.output, { recursive: true })
+                }
+            })
+            for (const input of options.input) {
+                const output = path.join(options.output, path.basename(input, path.extname(input)))
+                const results = await skip(() => {
+                    return runner(input, output, number)
+                }, `${input}:${output}:${number}`)
+                if (results.output != null) {
+                    terminal.print(success(results.output))
+                }
+                yield results
             }
-        })
-        for (const input of options.input) {
-            const output = path.join(options.output, path.basename(input, path.extname(input)))
-            const results = await runner(input, output, number)
-            if (results.output != null) {
-                terminal.print(success(results.output))
-            }
-            yield results
-        }
+        }, options.resume)
     }
 })
 
