@@ -1,4 +1,5 @@
 export { default as audio } from "./audio"              // -a
+export { default as config } from "./config"            // -c
 export { default as defaults } from "./defaults"        // -d
 export { default as exclude } from "./exclude"          // -x
 export { default as input } from "./input"              // -i
