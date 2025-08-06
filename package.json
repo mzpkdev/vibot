@@ -19,7 +19,8 @@
     "ffprobe-static": "^3.1.0",
     "logtint": "^0.2.0",
     "mediainfo-static": "^1.0.5",
-    "mkvmerge-static": "^1.0.0"
+    "mkvmerge-static": "^1.0.0",
+    "trash": "^9.0.0"
   },
   "devDependencies": {
     "@types/node": "^22.4.0",
