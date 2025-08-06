@@ -1,5 +1,6 @@
 export { default as audio } from "./audio"              // -a
 export { default as defaults } from "./defaults"        // -d
+export { default as exclude } from "./exclude"          // -x
 export { default as input } from "./input"              // -i
 export { default as language } from "./language"        // -l
 export { default as number } from "./number"            // -n

@@ -1,4 +1,4 @@
-import { defineOption, terminal } from "cmdore"
+import { defineOption, effect, terminal } from "cmdore"
 import * as fs from "node:fs"
 import * as path from "node:path"
 import trash from "trash"
@@ -22,7 +22,7 @@ export default defineOption({
             )
             if (toRemove) {
                 terminal.verbose(`Moving ${files.length} files from "${pathname}" directory to trash.`)
-                await trash(files)
+                await effect(() => trash(files))
             } else {
                 throw new Error(`Directory "${pathname}" must be empty.`)
             }

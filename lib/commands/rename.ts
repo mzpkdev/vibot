@@ -17,14 +17,14 @@ export default defineCommand({
     ],
     run: async function* ({ input, output }) {
         for (const filename of input) {
-            const results = await rename(filename, output)
+            const results = await runner(filename, output)
             terminal.print(success(results.output))
             yield results
         }
     }
 })
 
-export const rename = async (input: string, output: string) => {
+export const runner = async (input: string, output: string) => {
     const format = (template: string, values: path.ParsedPath): string => {
         return template.replace(/{(.*?)}/g, (_, key: keyof path.ParsedPath) => {
             if (values[key]) {
@@ -36,8 +36,8 @@ export const rename = async (input: string, output: string) => {
     }
     const filename = format(output, path.parse(input))
     terminal.verbose(`Creating directory "${path.dirname(filename)}"...`)
-    effect(() => fs.mkdirSync(path.dirname(filename), { recursive: true }))
+    await effect(() => fs.mkdirSync(path.dirname(filename), { recursive: true }))
     terminal.verbose(`Copying "${input}" to "${filename}"...`)
-    effect(() => fs.copyFileSync(input, filename))
+    await effect(() => fs.copyFileSync(input, filename))
     return { output: filename }
 }

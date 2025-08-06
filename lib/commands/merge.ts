@@ -29,7 +29,7 @@ export default defineCommand({
         const { title, language, defaults, number, purge } = options
         for (const [ input, audio, subtitles ] of zip(options.input, zip(...options.audio), zip(...options.subtitles))) {
             const output = path.join(options.output, path.basename(input))
-            const results = await merge(input, output, audio, subtitles, language, title, defaults, number, purge)
+            const results = await runner(input, output, audio, subtitles, language, title, defaults, number, purge)
             if (results.output != null) {
                 terminal.print(success(results.output))
             }
@@ -38,7 +38,7 @@ export default defineCommand({
     }
 })
 
-export const merge = async (
+export const runner = async (
     input: string,
     output: string,
     audio: string[] = [],

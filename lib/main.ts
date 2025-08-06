@@ -3,6 +3,7 @@ import rename from "@/commands/rename"
 import merge from "@/commands/merge"
 import extractaudio from "@/commands/extractaudio"
 import extractsubtitles from "@/commands/extractsubtitles"
+import loudnorm from "@/commands/loudnorm"
 
 
 export async function main(...varargs: string[]): Promise<number> {
@@ -12,6 +13,7 @@ export async function main(...varargs: string[]): Promise<number> {
         .register(merge)
         .register(extractaudio)
         .register(extractsubtitles)
+        .register(loudnorm)
         .execute(varargs)
     return 0
 }

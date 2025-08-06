@@ -21,14 +21,14 @@ export default defineCommand({
     ],
     run: async function* ({ ...options }) {
         const { number } = options
-        effect(() => {
+        await effect(() => {
             if (!fs.existsSync(options.output)) {
                 fs.mkdirSync(options.output, { recursive: true })
             }
         })
         for (const input of options.input) {
             const output = path.join(options.output, path.basename(input, path.extname(input)))
-            const results = await extractaudio(input, output, number)
+            const results = await runner(input, output, number)
             if (results.output != null) {
                 terminal.print(success(results.output))
             }
@@ -37,7 +37,7 @@ export default defineCommand({
     }
 })
 
-export const extractaudio = async (
+export const runner = async (
     input: string,
     output: string,
     number: number[]
