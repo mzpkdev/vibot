@@ -38,3 +38,14 @@ export const resumable = async function* (directory: string, inner: (skip: Skip)
     yield* inner(skip)
     fs.rmSync(cache, { recursive: true, force: true })
 }
+
+export const retry = <TReturnValue>(callback: () => TReturnValue, retries: number = 5): TReturnValue => {
+    if (retries < 0) {
+        return callback()
+    }
+    try {
+        return callback()
+    } catch {
+        return retry(callback, retries - 1)
+    }
+}

@@ -3,7 +3,7 @@ import * as path from "node:path"
 import { defineCommand, effect, terminal } from "cmdore"
 import { success } from "@/messages"
 import { AudioCodec, TrackType } from "@/core/executables"
-import { resumable } from "@/core/commands"
+import { resumable, retry } from "@/core/commands"
 import ffprobe, { info } from "@/executables/ffprobe"
 import ffmpeg, { ac, ar, bitrate, codec, copy, filter, loudnorm, map } from "@/executables/ffmpeg"
 import { exclude, input, output, resume } from "@/options"
@@ -32,7 +32,7 @@ export default defineCommand({
             for (const input of options.input) {
                 const output = path.join(options.output, path.basename(input))
                 const results = await skip(() => {
-                    return runner(input, output, exclude)
+                    return retry(() => runner(input, output, exclude))
                 }, `${input}:${output}:${exclude}`)
                 if (results.output != null) {
                     terminal.print(success(results.output))
