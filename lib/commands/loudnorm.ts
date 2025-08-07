@@ -24,7 +24,7 @@ export default defineCommand({
     run: async function* (options) {
         yield* resumable(options.output, async function* (skip) {
             const { exclude } = options
-            await effect(async () => {
+            await effect(() => {
                 if (!fs.existsSync(options.output)) {
                     fs.mkdirSync(options.output, { recursive: true })
                 }
