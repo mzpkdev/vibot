@@ -2,7 +2,7 @@ import * as fs from "node:fs"
 import * as path from "node:path"
 import { defineCommand, effect, terminal } from "cmdore"
 import { success } from "@/messages"
-import { resumable, retry } from "@/core/commands"
+import { resumable, retry } from "@/core/tools"
 import { input, output, resume } from "@/options"
 
 
@@ -20,9 +20,7 @@ export default defineCommand({
     run: async function* (options) {
         yield* resumable(path.dirname(options.output), async function* (skip) {
             for (const filename of options.input) {
-                const results = await skip(() => {
-                    return retry(() => runner(filename, options.output))
-                }, `${filename}:${options.output}`)
+                const results = await skip(retry(runner), [ filename, options.output ] as const)
                 terminal.print(success(results.output))
                 yield results
             }

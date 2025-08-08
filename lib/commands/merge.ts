@@ -2,7 +2,7 @@ import * as path from "node:path"
 import { defineCommand, terminal } from "cmdore"
 import { success } from "@/messages"
 import { zip } from "@/utilities/array"
-import { resumable, retry } from "@/core/commands"
+import { resumable, retry } from "@/core/tools"
 import mkvmerge, { clean, file, track } from "@/executables/mkvmerge"
 import { audio, defaults, input, language, number, output, purge, resume, subtitles, title } from "@/options"
 
@@ -32,9 +32,10 @@ export default defineCommand({
             const { title, language, defaults, number, purge } = options
             for (const [ input, audio, subtitles ] of zip(options.input, zip(...options.audio), zip(...options.subtitles))) {
                 const output = path.join(options.output, path.basename(input))
-                const results = await skip(() => {
-                    return retry(() => runner(input, output, audio, subtitles, language, title, defaults, number, purge))
-                }, `${input}:${output}:${audio}:${subtitles}:${language}:${title}:${defaults}:${number}:${purge}`)
+                const results = await skip(
+                    retry(runner),
+                    [ input, output, audio, subtitles, language, title, defaults, number, purge ] as const
+                )
                 if (results.output != null) {
                     terminal.print(success(results.output))
                 }
