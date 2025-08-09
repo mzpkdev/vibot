@@ -23,4 +23,4 @@ If you discover a security vulnerability, please follow these steps:
 
 ## Thank You
 
-Thank you for helping keep `vidbot` secure! Responsible disclosure helps protect everyone using this project.
+Thank you for helping keep `vibot` secure! Responsible disclosure helps protect everyone using this project.
