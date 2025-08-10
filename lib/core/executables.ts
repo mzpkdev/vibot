@@ -108,13 +108,9 @@ const requireStaticBinary = (name: string): string => {
 }
 
 export const extractJSON = (text: string): Record<string, any> => {
-    // if (stub.dry) {
-    //   return {}
-    // }
     const [ json ] = text.match(/\{([\s\S]*)}/) ?? []
-    try {
-        return JSON.parse(json!)
-    } catch (error) {
-        throw error
+    if (!json) {
+        return {}
     }
+    return JSON.parse(json)
 }
