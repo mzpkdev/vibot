@@ -2,7 +2,7 @@ import * as fs from "node:fs"
 import * as path from "node:path"
 import { defineCommand, effect, terminal } from "cmdore"
 import { success } from "@/messages"
-import resumable from "@/core/tools/resumable"
+import { resumable, retriable } from "@/tools"
 import { TrackType, VideoCodec } from "@/core/executables"
 import ffmpeg, { codec, copy, encode, Encoder, ENCODER_PRESETS, EncoderPreset } from "@/executables/ffmpeg"
 import { config, input, output, resume } from "@/options"
@@ -31,7 +31,7 @@ export default defineCommand({
         })
         for (const input of options.input) {
             const output = path.join(options.output, path.basename(input))
-            const results = await resume([ input ], () => runner(input, output, config))
+            const results = await resume([ input ], () => retriable(runner)(input, output, config))
             if (results.output != null) {
                 terminal.print(success(results.output))
             }

@@ -3,7 +3,7 @@ import * as path from "node:path"
 import { defineCommand, effect, terminal } from "cmdore"
 import { success } from "@/messages"
 import { TrackType } from "@/core/executables"
-import resumable from "@/core/tools/resumable"
+import { resumable, retriable } from "@/tools"
 import ffprobe, { info } from "@/executables/ffprobe"
 import ffmpeg, { extract } from "@/executables/ffmpeg"
 import { input, number, output, resume } from "@/options"
@@ -30,7 +30,7 @@ export default defineCommand({
         })
         for (const input of options.input) {
             const output = path.join(options.output, path.basename(input, path.extname(input)))
-            const results = await resume([ input ], () => runner(input, output, number))
+            const results = await resume([ input ], () => retriable(runner)(input, output, number))
             if (results.output != null) {
                 terminal.print(success(results.output))
             }

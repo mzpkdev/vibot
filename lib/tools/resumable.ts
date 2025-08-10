@@ -33,7 +33,7 @@ class Savefile {
     #_filename: string
 
     constructor(directory: string) {
-        const cachedir = path.join(directory, `.${require("../../../package.json").name}`)
+        const cachedir = path.join(directory, `.${require("../../package.json").name}`)
         this.#_filename = path.join(cachedir, "savestate.txt")
     }
 
@@ -63,6 +63,10 @@ class Savefile {
 
     clear(): void {
         fs.writeFileSync(this.#_filename, "")
+    }
+
+    delete(): void {
+        fs.rmdirSync(this.#_filename)
     }
 }
 
@@ -126,7 +130,7 @@ const resumable = <TThis, TArgv, TReturnValue>(
         }
 
         const returnValue = fn.call(this, argv, resume)
-        void returnValue
+        savefile.delete()
         return returnValue
     }
 }

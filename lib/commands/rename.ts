@@ -2,7 +2,7 @@ import * as fs from "node:fs"
 import * as path from "node:path"
 import { defineCommand, effect, terminal } from "cmdore"
 import { success } from "@/messages"
-import resumable from "@/core/tools/resumable"
+import { resumable, retriable } from "@/tools"
 import { input, output, resume } from "@/options"
 
 
@@ -19,7 +19,7 @@ export default defineCommand({
     ],
     run: resumable(async function* (options, resume) {
         for (const filename of options.input) {
-            const results = await resume([ filename ], () => runner(filename, options.output))
+            const results = await resume([ filename ], () => retriable(runner)(filename, options.output))
             terminal.print(success(results.output))
             yield results
         }

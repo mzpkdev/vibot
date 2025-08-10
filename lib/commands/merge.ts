@@ -4,7 +4,7 @@ import mkvmerge, { clean, file, track } from "@/executables/mkvmerge"
 import { audio, defaults, input, language, number, output, purge, resume, subtitles, title } from "@/options"
 import { zip } from "@/utilities/array"
 import { success } from "@/messages"
-import resumable from "@/core/tools/resumable"
+import { resumable, retriable } from "@/tools"
 
 
 export default defineCommand({
@@ -33,7 +33,7 @@ export default defineCommand({
         for (const [ input, audio, subtitles ] of tuples) {
             const output = path.join(argv.output, path.basename(input))
             const results = await resume([ input, audio, subtitles ], () =>
-                runner(input, output, audio, subtitles, language, title, defaults, number, purge)
+                retriable(runner)(input, output, audio, subtitles, language, title, defaults, number, purge)
             )
             if (results.output != null) {
                 terminal.print(success(results.output))

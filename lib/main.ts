@@ -11,10 +11,6 @@ import encode from "@/commands/encode"
 import { output, resume } from "@/options"
 
 
-/*
-    TODO:
-      - Make --resume smart, so it can infer what flags it should use based on savestate
- */
 export async function main(...varargs: string[]): Promise<number> {
     const program = cmdore()
         .intercept([ output, resume ], async ({ output, resume }: any) => {

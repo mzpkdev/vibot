@@ -1,5 +1,4 @@
 import * as child_process from "child_process"
-import * as fs from "fs"
 import * as path from "path"
 import { terminal } from "cmdore"
 import { executing } from "@/messages"
@@ -117,36 +116,5 @@ export const extractJSON = (text: string): Record<string, any> => {
         return JSON.parse(json!)
     } catch (error) {
         throw error
-    }
-}
-
-export const savestate = new class SaveState {
-    savefile: string = ".save"
-    state: string[] = []
-
-    load(output: string): string[] {
-        this.savefile = path.join(output, path.basename(this.savefile))
-        if (!fs.existsSync(this.savefile)) {
-            fs.writeFileSync(this.savefile, "")
-            return []
-        } else {
-            this.state = fs.readFileSync(this.savefile, "utf-8")
-                .split("\n")
-            return this.state
-        }
-    }
-
-    save(input: string): void {
-        fs.appendFileSync(this.savefile, path.basename(input) + "\n")
-    }
-
-    has(input: string): boolean {
-        return this.state.includes(path.basename(input))
-    }
-
-    delete(): void {
-        if (fs.existsSync(this.savefile)) {
-            fs.rmSync(this.savefile)
-        }
     }
 }
