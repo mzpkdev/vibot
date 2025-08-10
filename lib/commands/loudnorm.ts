@@ -3,7 +3,7 @@ import * as path from "node:path"
 import { defineCommand, effect, terminal } from "cmdore"
 import { success } from "@/messages"
 import { AudioCodec, TrackType } from "@/core/executables"
-import { resumable, retry } from "@/core/tools"
+import resumable from "@/core/tools/resumable"
 import ffprobe, { info } from "@/executables/ffprobe"
 import ffmpeg, { ac, ar, bitrate, codec, copy, filter, loudnorm, map } from "@/executables/ffmpeg"
 import { exclude, input, output, resume } from "@/options"
@@ -21,24 +21,22 @@ export default defineCommand({
         exclude,
         resume
     ],
-    run: async function* (options) {
-        yield* resumable(options.output, async function* (skip) {
-            const { exclude } = options
-            await effect(() => {
-                if (!fs.existsSync(options.output)) {
-                    fs.mkdirSync(options.output, { recursive: true })
-                }
-            })
-            for (const input of options.input) {
-                const output = path.join(options.output, path.basename(input))
-                const results = await skip(retry(runner), [ input, output, exclude ] as const)
-                if (results.output != null) {
-                    terminal.print(success(results.output))
-                }
-                yield results
+    run: resumable(async function* (options, resume) {
+        const { exclude } = options
+        await effect(() => {
+            if (!fs.existsSync(options.output)) {
+                fs.mkdirSync(options.output, { recursive: true })
             }
-        }, options.resume)
-    }
+        })
+        for (const input of options.input) {
+            const output = path.join(options.output, path.basename(input))
+            const results = await resume([ input ], () => runner(input, output, exclude))
+            if (results.output != null) {
+                terminal.print(success(results.output))
+            }
+            yield results
+        }
+    })
 })
 
 export const runner = async (

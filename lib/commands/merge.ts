@@ -1,10 +1,10 @@
 import * as path from "node:path"
 import { defineCommand, terminal } from "cmdore"
-import { success } from "@/messages"
-import { zip } from "@/utilities/array"
-import { resumable, retry } from "@/core/tools"
 import mkvmerge, { clean, file, track } from "@/executables/mkvmerge"
 import { audio, defaults, input, language, number, output, purge, resume, subtitles, title } from "@/options"
+import { zip } from "@/utilities/array"
+import { success } from "@/messages"
+import resumable from "@/core/tools/resumable"
 
 
 export default defineCommand({
@@ -27,22 +27,20 @@ export default defineCommand({
         purge,
         resume
     ],
-    run: async function* (options) {
-        yield* resumable(options.output, async function* (skip) {
-            const { title, language, defaults, number, purge } = options
-            for (const [ input, audio, subtitles ] of zip(options.input, zip(...options.audio), zip(...options.subtitles))) {
-                const output = path.join(options.output, path.basename(input))
-                const results = await skip(
-                    retry(runner),
-                    [ input, output, audio, subtitles, language, title, defaults, number, purge ] as const
-                )
-                if (results.output != null) {
-                    terminal.print(success(results.output))
-                }
-                yield results
+    run: resumable(async function* (argv, resume) {
+        const { title, language, defaults, number, purge } = argv
+        const tuples = zip(argv.input, zip(...argv.audio), zip(...argv.subtitles))
+        for (const [ input, audio, subtitles ] of tuples) {
+            const output = path.join(argv.output, path.basename(input))
+            const results = await resume([ input, audio, subtitles ], () =>
+                runner(input, output, audio, subtitles, language, title, defaults, number, purge)
+            )
+            if (results.output != null) {
+                terminal.print(success(results.output))
             }
-        }, options.resume)
-    }
+            yield results
+        }
+    })
 })
 
 export const runner = async (

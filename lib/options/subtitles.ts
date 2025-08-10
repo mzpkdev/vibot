@@ -7,6 +7,7 @@ export default defineOption({
     name: "subtitles",
     alias: "s",
     description: "path to directory containing subtitle files to be included in the merge",
+    resumable: true,
     defaultValue: () => {
         return []
     },

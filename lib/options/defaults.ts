@@ -5,6 +5,7 @@ export default defineOption({
     name: "defaults",
     alias: "d",
     description: "set track as default in the merged file (use 'yes' to enable)",
+    resumable: true,
     defaultValue: () => {
         return [ true ]
     },

@@ -5,6 +5,7 @@ export default defineOption({
     name: "config",
     alias: "c",
     description: "specify configuration options for commands in key:value format",
+    resumable: true,
     defaultValue: () => {
         return {}
     },

@@ -5,6 +5,7 @@ export default defineOption({
     name: "exclude",
     alias: "x",
     description: "specify track numbers to exclude from processing operations",
+    resumable: true,
     defaultValue: () => {
         return []
     },

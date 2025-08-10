@@ -7,6 +7,7 @@ export default defineOption({
     name: "audio",
     alias: "a",
     description: "path to directory containing audio files to be included in the merge",
+    resumable: true,
     defaultValue: () => {
         return []
     },
