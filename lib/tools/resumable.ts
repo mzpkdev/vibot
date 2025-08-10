@@ -61,19 +61,15 @@ class Savefile {
         fs.appendFileSync(this.#filename, JSON.stringify(product) + "\n")
     }
 
-    clear(): void {
-        fs.writeFileSync(this.#filename, "")
-    }
-
     delete(): void {
         fs.unlinkSync(this.#filename)
     }
 }
 
 const resumable = <TThis, TArgv, TReturnValue>(
-    fn: (this: TThis, argv: TArgv, resume: ResumeFunction) => TReturnValue
-): (this: TThis, argv: TArgv) => any => {
-    return async function (this: TThis, argv: TArgv) {
+    fn: (this: TThis, argv: TArgv, resume: ResumeFunction) => AsyncIterable<TReturnValue>
+)=> {
+    return async function* (this: TThis, argv: TArgv) {
         const thisRecord = this as Record<string, any>
         const argvRecord = argv as Record<string, any>
 
@@ -123,9 +119,8 @@ const resumable = <TThis, TArgv, TReturnValue>(
             return product.output as any
         }
 
-        const returnValue = fn.call(this, argv, resume)
+        yield* fn.call(this, argv, resume)
         savefile.delete()
-        return returnValue
     }
 }
 
