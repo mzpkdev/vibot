@@ -1,5 +1,5 @@
 import * as path from "node:path"
-import { defineCommand, terminal } from "cmdore"
+import { defineCommand } from "cmdore"
 import mkvmerge, { clean, file, track } from "@/executables/mkvmerge"
 import { audio, defaults, input, language, number, output, purge, resume, subtitles, title } from "@/options"
 import { zip } from "@/utilities/array"
@@ -36,7 +36,7 @@ export default defineCommand({
                 retriable(runner)(input, output, audio, subtitles, language, title, defaults, number, purge)
             )
             if (results.output != null) {
-                terminal.print(success(results.output))
+                console.log(success(results.output))
             }
             yield results
         }

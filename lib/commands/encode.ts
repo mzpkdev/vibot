@@ -1,6 +1,6 @@
 import * as fs from "node:fs"
 import * as path from "node:path"
-import { defineCommand, effect, terminal } from "cmdore"
+import { defineCommand, effect } from "cmdore"
 import { success } from "@/messages"
 import { resumable, retriable } from "@/tools"
 import { TrackType, VideoCodec } from "@/core/executables"
@@ -33,7 +33,7 @@ export default defineCommand({
             const output = path.join(options.output, path.basename(input))
             const results = await resume([ input ], () => retriable(runner)(input, output, config))
             if (results.output != null) {
-                terminal.print(success(results.output))
+                console.log(success(results.output))
             }
             yield results
         }

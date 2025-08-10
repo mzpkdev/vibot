@@ -1,6 +1,5 @@
 import * as child_process from "child_process"
 import * as path from "path"
-import { terminal } from "cmdore"
 import { executing } from "@/messages"
 
 
@@ -64,7 +63,7 @@ export const spawn = async (binary: string, args: ExecuteArgs[]): Promise<string
         .flat(5)
         .filter((arg): arg is string => !!arg)
         .map((arg) => String(arg).replaceAll(/""([^"]+)""/g, `"$1"`))
-    terminal.verbose(executing(binary, argsNormalized))
+    console.debug(executing(binary, argsNormalized))
     const stream = child_process.spawn(
         binaryNormalized,
         argsNormalized,

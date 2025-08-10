@@ -119,7 +119,7 @@ const resumable = <TThis, TArgv, TReturnValue>(
                 savefile.write({ input: hash(key), output: returnValue })
                 return returnValue
             }
-            terminal.verbose(`Skipping...`)
+            console.debug(`Skipping...`)
             return product.output as any
         }
 

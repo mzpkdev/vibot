@@ -1,4 +1,3 @@
-import { terminal } from "cmdore"
 import { wait } from "@/utilities/promise"
 
 
@@ -13,7 +12,7 @@ export const retriable = <TReturnValue, TArgs extends readonly unknown[]>(
         try {
             return await callback(...varargs)
         } catch {
-            terminal.verbose(`Retrying... (${retries} attempts left)`)
+            console.debug(`Retrying... (${retries} attempts left)`)
             await wait(10_000)
             retries--
             return r.call(this, ...varargs)

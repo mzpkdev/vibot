@@ -25,7 +25,7 @@ export async function main(...varargs: string[]): Promise<number> {
                     answer => /^(y|yes)$/i.test(answer)
                 )
                 if (toTrash) {
-                    terminal.verbose(`Moving ${files.length} files from "${output}" directory to trash.`)
+                    console.debug(`Moving ${files.length} files from "${output}" directory to trash.`)
                     await effect(async () => {
                         try {
                             await trash(files)

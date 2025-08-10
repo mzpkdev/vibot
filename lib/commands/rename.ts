@@ -1,6 +1,6 @@
 import * as fs from "node:fs"
 import * as path from "node:path"
-import { defineCommand, effect, terminal } from "cmdore"
+import { defineCommand, effect } from "cmdore"
 import { success } from "@/messages"
 import { resumable, retriable } from "@/tools"
 import { input, output, resume } from "@/options"
@@ -20,7 +20,7 @@ export default defineCommand({
     run: resumable(async function* (options, resume) {
         for (const filename of options.input) {
             const results = await resume([ filename ], () => retriable(runner)(filename, options.output))
-            terminal.print(success(results.output))
+            console.log(success(results.output))
             yield results
         }
     })
@@ -37,9 +37,9 @@ export const runner = async (input: string, output: string) => {
         })
     }
     const filename = format(output, path.parse(input))
-    terminal.verbose(`Creating directory "${path.dirname(filename)}"...`)
+    console.debug(`Creating directory "${path.dirname(filename)}"...`)
     await effect(async () => fs.mkdirSync(path.dirname(filename), { recursive: true }))
-    terminal.verbose(`Copying "${input}" to "${filename}"...`)
+    console.debug(`Copying "${input}" to "${filename}"...`)
     await effect(async () => fs.copyFileSync(input, filename))
     return { output: filename }
 }
