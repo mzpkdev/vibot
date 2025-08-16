@@ -1,7 +1,7 @@
 {
   "name": "vibot",
   "description": "A flexible utility for editing and organizing video content",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
   "bin": {
@@ -14,10 +14,10 @@
     "prepack": "npm run build"
   },
   "dependencies": {
-    "cmdore": "^0.0.5",
+    "cmdore": "^0.0.6",
     "ffmpeg-static": "^5.2.0",
     "ffprobe-static": "^3.1.0",
-    "logtint": "^0.2.0",
+    "logtint": "^0.2.3",
     "mediainfo-static": "^1.0.5",
     "mkvmerge-static": "^1.0.0",
     "trash": "^9.0.0"
