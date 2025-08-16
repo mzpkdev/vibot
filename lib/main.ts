@@ -25,9 +25,9 @@ export async function main(...varargs: string[]): Promise<number> {
                     answer => /^(y|yes)$/i.test(answer)
                 )
                 if (toTrash) {
-                    console.debug(`Moving ${files.length} files from "${output}" directory to trash.`)
                     await effect(async () => {
                         try {
+                            console.debug(`Moving ${files.length} files from "${output}" directory to trash.`)
                             await trash(files)
                         } catch {
                             const toPermanentlyDelete = await terminal.prompt(
@@ -35,6 +35,7 @@ export async function main(...varargs: string[]): Promise<number> {
                                 answer => /^(y|yes)$/i.test(answer)
                             )
                             if (toPermanentlyDelete) {
+                                console.debug(`Permanently deleting ${files.length} files from "${output}" directory.`)
                                 for (const file of files) {
                                     fs.rmSync(file, { recursive: true, force: true })
                                 }

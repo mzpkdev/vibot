@@ -366,11 +366,16 @@ export const ar = (rate: number): Chainable<ExecutableOption> =>
         }
     }
 
-export const map = (index: number | null, type: TrackType): Chainable<ExecutableOption<string>> =>
+export const map = (index: number | null, type?: TrackType): Chainable<ExecutableOption<string>> =>
     async () => {
         return {
             argument: [
-                [ `-map`, index === null ? `0:${type}?` : `0:${type}:${index}` ]
+                [ `-map`, type
+                    ? index === null
+                        ? `0:${type}?`
+                        : `0:${type}:${index}`
+                    : `0`
+                ]
             ]
         }
     }

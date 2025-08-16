@@ -15,12 +15,12 @@ export default defineOption({
                 .map(config => config.split(":"))
                 .map(([ property, value = null ]) => {
                     if (!Number.isNaN(Number(value))) {
-                        return [ property, Number(value) ]
+                        return [ property.toLowerCase(), Number(value) ]
                     }
                     if (value == null) {
-                        return [ property, true ]
+                        return [ property.toLowerCase(), true ]
                     }
-                    return [ property, String(value).toUpperCase() ]
+                    return [ property.toLowerCase(), String(value).toUpperCase() ]
                 })
         )
     }
