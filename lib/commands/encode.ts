@@ -33,7 +33,7 @@ export default defineCommand({
             const output = path.join(options.output, path.basename(input))
             const results = await resume([ input ], () => retriable(runner)(input, output, config))
             if (results.output != null) {
-                console.log(success(results.output))
+                console.log(success(results.output, results.date))
             }
             yield results
         }
@@ -56,5 +56,5 @@ export const runner = async (
         copy(null, TrackType.SUBTITLES),
         map(null)
     )
-    return { output }
+    return { output, date: new Date() }
 }

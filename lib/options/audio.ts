@@ -20,7 +20,12 @@ export default defineOption({
     },
     parse: (...pathnames) => {
         return pathnames.map((pathname) => {
+            const stats = fs.statSync(pathname)
+            if (stats.isFile()) {
+                return [ pathname ]
+            }
             return fs.readdirSync(pathname)
+                .filter(filename => !filename.startsWith("."))
                 .map(filename => path.join(pathname, filename))
         })
     }

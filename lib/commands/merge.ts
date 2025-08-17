@@ -36,7 +36,7 @@ export default defineCommand({
                 retriable(runner)(input, output, audio, subtitles, language, title, defaults, number, purge)
             )
             if (results.output != null) {
-                console.log(success(results.output))
+                console.log(success(results.output, results.date))
             }
             yield results
         }
@@ -76,5 +76,5 @@ export const runner = async (
             })
         )
     )
-    return { output }
+    return { output, date: new Date() }
 }

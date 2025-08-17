@@ -32,7 +32,7 @@ export default defineCommand({
             const output = path.join(options.output, path.basename(input))
             const results = await resume([ input ], () => retriable(runner)(input, output, exclude))
             if (results.output != null) {
-                console.log(success(results.output))
+                console.log(success(results.output, results.date))
             }
             yield results
         }
@@ -66,5 +66,5 @@ export const runner = async (
                 bitrate(index, TrackType.AUDIO, bitrate.audio(stream.codec, stream.channels))
             ])
     )
-    return { output }
+    return { output, date: new Date() }
 }

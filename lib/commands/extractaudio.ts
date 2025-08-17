@@ -22,17 +22,17 @@ export default defineCommand({
         resume
     ],
     run: resumable(async function* (options, resume) {
-        const { number } = options
+        const { output, number } = options
         await effect(() => {
             if (!fs.existsSync(options.output)) {
                 fs.mkdirSync(options.output, { recursive: true })
             }
         })
         for (const input of options.input) {
-            const output = path.join(options.output, path.basename(input, path.extname(input)))
-            const results = await resume([ input ], () => retriable(runner)(input, output, number))
+            const results = await resume([ input ], () =>
+                retriable(runner)(input, output, number))
             if (results.output != null) {
-                console.log(success(results.output))
+                console.log(success(results.output, results.date))
             }
             yield results
         }
@@ -42,12 +42,22 @@ export default defineCommand({
 export const runner = async (
     input: string,
     output: string,
-    number: number[]
+    number: number[],
 ) => {
     const streams = await ffprobe(input, info(TrackType.AUDIO))
-    const [ index ] = number
-    const codec = streams[index]?.codec
-    const filename = `${output}.${codec}`
-    await ffmpeg(input, effect.enabled ? filename : null, extract(index, TrackType.AUDIO))
-    return { output: filename }
+    const done = await Promise.all(
+        streams
+            .filter((_, index) => number.length == 0 || number.includes(index))
+            .map(async (stream, index) => {
+                const codec = stream.codec
+                const dirname = path.join(output, String(index))
+                if (!fs.existsSync(dirname)) {
+                    fs.mkdirSync(dirname)
+                }
+                const filename = `${path.basename(input, path.extname(input))}.${codec}`
+                await ffmpeg(input, effect.enabled ? path.join(dirname, filename) : null, extract(null, TrackType.AUDIO))
+                return filename
+            })
+    )
+    return { output: done.join(", "), date: new Date() }
 }

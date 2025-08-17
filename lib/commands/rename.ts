@@ -20,7 +20,7 @@ export default defineCommand({
     run: resumable(async function* (options, resume) {
         for (const filename of options.input) {
             const results = await resume([ filename ], () => retriable(runner)(filename, options.output))
-            console.log(success(results.output))
+            console.log(success(results.output, results.date))
             yield results
         }
     })
@@ -41,5 +41,5 @@ export const runner = async (input: string, output: string) => {
     await effect(async () => fs.mkdirSync(path.dirname(filename), { recursive: true }))
     console.debug(`Copying "${input}" to "${filename}"...`)
     await effect(async () => fs.copyFileSync(input, filename))
-    return { output: filename }
+    return { output: filename, date: new Date() }
 }

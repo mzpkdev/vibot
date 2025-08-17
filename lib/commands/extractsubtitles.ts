@@ -21,17 +21,17 @@ export default defineCommand({
         resume
     ],
     run: resumable(async function* (options, resume) {
-        const { number } = options
+        const { output, number } = options
         await effect(() => {
             if (!fs.existsSync(options.output)) {
                 fs.mkdirSync(options.output, { recursive: true })
             }
         })
         for (const input of options.input) {
-            const output = `${path.join(options.output, path.basename(input, path.extname(input)))}.srt`
-            const results = await resume([ input ], () => retriable(runner)(input, output, number))
+            const results = await resume([ input ], () =>
+                retriable(runner)(input, output, number))
             if (results.output != null) {
-                console.log(success(results.output))
+                console.log(success(results.output, results.date))
             }
             yield results
         }
@@ -43,6 +43,12 @@ export const runner = async (
     output: string,
     number: number[]
 ) => {
-    await ffmpeg(input, effect.enabled ? output : null, extract(number[0], TrackType.SUBTITLES))
-    return { output }
+    const finished = await Promise.all(
+        number.map(async (index) => {
+            const filename = `${path.join(output, path.basename(input, path.extname(input)))}.srt`
+            await ffmpeg(input, effect.enabled ? filename : null, extract(index, TrackType.SUBTITLES))
+            return filename
+        })
+    )
+    return { output: finished.join(", "), date: new Date() }
 }
