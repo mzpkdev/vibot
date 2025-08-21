@@ -56,5 +56,5 @@ export const runner = async (
         copy(null, TrackType.SUBTITLES),
         map(null)
     )
-    return { output, date: new Date() }
+    return { output, date: new Date().toISOString() }
 }

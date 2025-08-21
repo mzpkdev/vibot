@@ -41,5 +41,5 @@ export const runner = async (input: string, output: string) => {
     await effect(async () => fs.mkdirSync(path.dirname(filename), { recursive: true }))
     console.debug(`Copying "${input}" to "${filename}"...`)
     await effect(async () => fs.copyFileSync(input, filename))
-    return { output: filename, date: new Date() }
+    return { output: filename, date: new Date().toISOString() }
 }

@@ -50,5 +50,5 @@ export const runner = async (
             return filename
         })
     )
-    return { output: finished.join(", "), date: new Date() }
+    return { output: finished.join(", "), date: new Date().toISOString() }
 }

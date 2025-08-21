@@ -1,6 +1,6 @@
 import * as fs from "node:fs"
-import * as path from "node:path"
 import { defineOption } from "cmdore"
+import { scan } from "@/utilities/fs"
 
 
 export default defineOption({
@@ -19,14 +19,6 @@ export default defineOption({
         }
     },
     parse: (...pathnames) => {
-        return pathnames.map((pathname) => {
-            const stats = fs.statSync(pathname)
-            if (stats.isFile()) {
-                return [ pathname ]
-            }
-            return fs.readdirSync(pathname)
-                .filter(filename => !filename.startsWith("."))
-                .map(filename => path.join(pathname, filename))
-        })
+        return pathnames.map(scan)
     }
 })

@@ -76,5 +76,5 @@ export const runner = async (
             })
         )
     )
-    return { output, date: new Date() }
+    return { output, date: new Date().toISOString() }
 }

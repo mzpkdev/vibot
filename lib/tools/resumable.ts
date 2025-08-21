@@ -33,8 +33,7 @@ class Savefile {
     #filename: string
 
     constructor(directory: string) {
-        const cachedir = path.join(directory, `.${require("../../package.json").name}`)
-        this.#filename = path.join(cachedir, "savestate.txt")
+        this.#filename = path.join(directory, "savestate.txt")
     }
 
     exists(): boolean {
@@ -60,10 +59,6 @@ class Savefile {
     write(product: Product): void {
         fs.appendFileSync(this.#filename, JSON.stringify(product) + "\n")
     }
-
-    delete(): void {
-        fs.unlinkSync(this.#filename)
-    }
 }
 
 const resumable = <TThis, TArgv, TReturnValue>(
@@ -73,7 +68,8 @@ const resumable = <TThis, TArgv, TReturnValue>(
         const thisRecord = this as Record<string, any>
         const argvRecord = argv as Record<string, any>
 
-        const savefile = new Savefile(argvRecord.output)
+        const cachedir = path.join(argvRecord.output, `.${require("../../package.json").name}`)
+        const savefile = new Savefile(cachedir)
         const command: Command = {
             name: thisRecord.name,
             argv: Object.fromEntries(
@@ -120,7 +116,7 @@ const resumable = <TThis, TArgv, TReturnValue>(
         }
 
         yield* fn.call(this, argv, resume)
-        savefile.delete()
+        fs.rmSync(cachedir, { force: true, recursive: true })
     }
 }
 

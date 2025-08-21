@@ -45,19 +45,20 @@ export const runner = async (
     number: number[],
 ) => {
     const streams = await ffprobe(input, info(TrackType.AUDIO))
-    const done = await Promise.all(
+    await Promise.all(
         streams
             .filter((_, index) => number.length == 0 || number.includes(index))
             .map(async (stream, index) => {
                 const codec = stream.codec
                 const dirname = path.join(output, String(index))
-                if (!fs.existsSync(dirname)) {
-                    fs.mkdirSync(dirname)
-                }
-                const filename = `${path.basename(input, path.extname(input))}.${codec}`
-                await ffmpeg(input, effect.enabled ? path.join(dirname, filename) : null, extract(null, TrackType.AUDIO))
-                return filename
+                await effect(() => {
+                    if (!fs.existsSync(dirname)) {
+                        fs.mkdirSync(dirname)
+                    }
+                })
+                const filename = `${path.basename(input, path.extname(input))}.${index}.${codec}`
+                await ffmpeg(input, effect.enabled ? path.join(dirname, filename) : null, extract(index, TrackType.AUDIO))
             })
     )
-    return { output: done.join(", "), date: new Date() }
+    return { output: input, date: new Date().toISOString() }
 }

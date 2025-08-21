@@ -107,10 +107,15 @@ const requireStaticBinary = (name: string): string => {
 }
 
 export const extractJSON = (text: string): Record<string, any> => {
-    const [ json ] = text.match(/\{([\s\S]*)}/) ?? []
+    const lines = text.split(/\r?\n/)
+    const index = lines.indexOf("{")
+    if (index === -1) {
+        throw new Error("No JSON there")
+    }
+    const jsonText = lines.slice(index).join("\n")
+    const [ json ] = jsonText.match(/\{([\s\S]*)}/) ?? []
     if (!json) {
-        console.warn(text)
-        return {}
+        throw new Error(`no json at all`)
     }
     try {
         return JSON.parse(json)

@@ -7,7 +7,7 @@ export default defineOption({
     description: "specify track number to extract or use in merge operations",
     resumable: true,
     defaultValue: () => {
-        return [ 0 ]
+        return []
     },
     validate: (...numbers) => {
         for (const number of numbers) {

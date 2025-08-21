@@ -491,7 +491,7 @@ export const loudnorm = (): Chainable<FilterArgument> =>
         )
         const data = extractJSON(text)
         // if (VERBOSE() >= VerbosityLevel.MEDIUM) {
-            console.debug(data)
+        //     console.debug(data)
         // }
         const defaults = {
             i: -23,

@@ -66,5 +66,5 @@ export const runner = async (
                 bitrate(index, TrackType.AUDIO, bitrate.audio(stream.codec, stream.channels))
             ])
     )
-    return { output, date: new Date() }
+    return { output, date: new Date().toISOString() }
 }
