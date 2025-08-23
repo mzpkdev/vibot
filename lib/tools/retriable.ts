@@ -3,7 +3,7 @@ import { wait } from "@/utilities/promise"
 
 export const retriable = <TReturnValue, TArgs extends readonly unknown[]>(
     callback: (...varargs: TArgs) => Promise<TReturnValue>,
-    retries: number = 5
+    retries: number = 0
 ) => {
     return async function r(this: unknown, ...varargs: TArgs): Promise<TReturnValue> {
         if (retries < 0) {

@@ -17,3 +17,5 @@ TODO
   [-] Add sorting inputs in ascending order
   [-] Add support for specyfing language in `extractaudio`
   [-] Make `extractaudio` name directories based on stream's language
+  [-] Fix savestate read/write not retrying in case of unstable network
+

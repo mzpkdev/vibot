@@ -50,7 +50,7 @@ export const runner = async (
         input,
         `"${output}"`,
         ar(48000),
-        map(null, TrackType.VIDEO),
+        map(0, TrackType.VIDEO),
         copy(null, TrackType.VIDEO),
         map(null, TrackType.SUBTITLES),
         copy(null, TrackType.SUBTITLES),

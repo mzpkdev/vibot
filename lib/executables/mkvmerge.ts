@@ -62,6 +62,7 @@ export const clean = (exclude: string[] = []): Chainable<ExecutableOption> =>
     async () => {
         return {
             argument: [
+                [ "--video-tracks 0" ],
                 [ "--language 0:und" ],
                 [ `--track-name 0:""` ],
                 [ `--default-track 0:yes` ],
