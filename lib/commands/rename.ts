@@ -32,7 +32,7 @@ export const runner = async (input: string, output: string) => {
             if (values[key]) {
                 return values[key]
             } else {
-                throw new Error("Invalid template.")
+                throw new Error(`Invalid template: Key '${key}' not found in the file path data. Available keys are: root, dir, base, ext, name.`)
             }
         })
     }

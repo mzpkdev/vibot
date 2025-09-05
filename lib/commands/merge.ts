@@ -31,7 +31,7 @@ export default defineCommand({
         const { title, language, defaults, number, purge } = argv
         const tuples = zip(argv.input, zip(...argv.audio), zip(...argv.subtitles))
         for (const [ input, audio, subtitles ] of tuples) {
-            const output = path.join(argv.output, path.basename(input))
+            const output = path.join(argv.output, `${path.basename(input, path.extname(input))}.mkv`)
             const results = await resume([ input, audio, subtitles ], () =>
                 retriable(runner)(input, output, audio, subtitles, language, title, defaults, number, purge)
             )

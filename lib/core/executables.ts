@@ -110,12 +110,12 @@ export const extractJSON = (text: string): Record<string, any> => {
     const lines = text.split(/\r?\n/)
     const index = lines.indexOf("{")
     if (index === -1) {
-        throw new Error("No JSON there")
+        throw new Error("Failed to extract JSON: No opening brace '{' found in the text. Check the input format.")
     }
     const jsonText = lines.slice(index).join("\n")
     const [ json ] = jsonText.match(/\{([\s\S]*)}/) ?? []
     if (!json) {
-        throw new Error(`no json at all`)
+        throw new Error(`Failed to extract JSON: No valid JSON pattern found in the text. The text might be malformed or not contain proper JSON structure.`)
     }
     try {
         return JSON.parse(json)

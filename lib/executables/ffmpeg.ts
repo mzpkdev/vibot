@@ -411,6 +411,8 @@ codec.audio = (codec: AudioCodec, channels: number) => {
                 default:
                     return AudioCodec.AAC
             }
+        case 4:
+        case 5:
         case 6:
             switch (codec) {
                 default:
@@ -418,7 +420,7 @@ codec.audio = (codec: AudioCodec, channels: number) => {
             }
         case 8:
         default:
-            throw "todo" // todo
+            throw new Error(`Unsupported audio configuration: ${channels} channels with codec ${codec}. Please use a supported channel count (1, 2, 4, 5, or 6) or a different codec.`)
     }
 }
 
@@ -441,6 +443,8 @@ bitrate.audio = (codec: AudioCodec, channels: number) => {
                 default:
                     return Bitrate.B192K
             }
+        case 4:
+        case 5:
         case 6:
             switch (codec) {
                 case AudioCodec.TRUEHD:
@@ -455,7 +459,7 @@ bitrate.audio = (codec: AudioCodec, channels: number) => {
             }
         case 8:
         default:
-            throw "todo" // todo
+            throw new Error(`Unsupported bitrate configuration: ${channels} channels with codec ${codec}. Please use a supported channel count (1, 2, 4, 5, or 6) or a different codec for bitrate selection.`)
     }
 }
 
